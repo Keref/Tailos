@@ -6,10 +6,10 @@ export default function NotesSidebar({ notes, setActiveNote, saveNote }) {
   const [title, setTitle] = useState("")
   
   return (
-    <div className="min-w-64 flex flex-col">
+    <div className="min-w-64 flex flex-col pt-4">
       <div>
-        <input type="text" placeholder="title" className="input" onChange={(e) => { setTitle(e.target.value) }}/>
-        <button className="btn" onClick={() => {saveNote(title, "")}} disabled={!title}>+</button>
+        <input className="input input-bordered input-sm" type="text" placeholder="title" onChange={(e) => { setTitle(e.target.value) }}/>
+        <button className="btn btn-sm" onClick={() => {saveNote(title, "")}} disabled={!title}>+</button>
       </div>
       <div 
         className={listStyle}

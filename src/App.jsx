@@ -14,7 +14,7 @@ function App() {
     <NoteContextProvider>
       <div className="container mx-auto md:min h-full">
         <Navbar route={route} setRoute={setRoute} />
-        <div className="h-full">
+        <div className="h-full p-2">
           { route == "Notes" ? <Notes /> : <></> }
           { route == "Chat" ? <ChatBox /> : <></> }
         </div>

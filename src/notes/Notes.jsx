@@ -23,11 +23,8 @@ export default function Notes(){
   }
   
   useEffect(() => {
-    const g = async () => {
-      const notes = await getAllNotes()
-      setNotes(notes ?? {})
-    }
-    g()
+    const notes = getAllNotes()
+    setNotes(notes ?? {})
   }, [])
   
   return (<div className="flex  min-h-96">
