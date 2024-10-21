@@ -3,7 +3,10 @@ import ReactMarkdown from 'react-markdown'
 
 function MarkdownToHtml({ content }){
   return(
-    <ReactMarkdown>{content}</ReactMarkdown>
+  <div class="prose lg:prose-xl">
+  <ReactMarkdown>{content}</ReactMarkdown>
+</div>
+    
   )
 }
 

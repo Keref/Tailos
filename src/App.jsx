@@ -5,6 +5,7 @@ import './App.css'
 import Navbar from "./components/Navbar"
 import NoteContextProvider from "./notes/NoteContext"
 import Notes from "./notes/Notes"
+import ChatBox from "./llm/ChatBox"
 
 function App() {
   const [route, setRoute] = useState("Notes")
@@ -15,6 +16,7 @@ function App() {
         <Navbar route={route} setRoute={setRoute} />
         <div className="h-full">
           { route == "Notes" ? <Notes /> : <></> }
+          { route == "Chat" ? <ChatBox /> : <></> }
         </div>
       </div>
     </NoteContextProvider>

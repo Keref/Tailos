@@ -32,7 +32,7 @@ export default function Notes(){
   
   return (<div className="flex  min-h-96">
     <NotesSidebar notes={notes} setActiveNote={setActiveNote} saveNote={saveNote} />
-    <div className="bg-blue-100 w-full">
+    <div className="w-full">
     {
       activeNote == "" ?
         <NotesOverview notes={notes} setActiveNote={setActiveNote} />
