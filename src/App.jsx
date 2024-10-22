@@ -6,6 +6,7 @@ import Navbar from "./components/Navbar"
 import NoteContextProvider from "./notes/NoteContext"
 import Notes from "./notes/Notes"
 import ChatBox from "./llm/ChatBox"
+import Communities from "./communities/Communities"
 
 function App() {
   const [route, setRoute] = useState("Notes")
@@ -17,6 +18,7 @@ function App() {
         <div className="h-full p-2">
           { route == "Notes" ? <Notes /> : <></> }
           { route == "Chat" ? <ChatBox /> : <></> }
+          { route == "Communities" ? <Communities /> : <></> }
         </div>
       </div>
     </NoteContextProvider>

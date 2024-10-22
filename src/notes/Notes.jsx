@@ -7,7 +7,7 @@ import NoteEditor from "./NoteEditor"
 export default function Notes(){
   const [activeNote, setActiveNote] = useState("")
   const [notes, setNotes] = useState({})
-  const { getAllNotes, getNote, setNote, destroyNote } = useContext(NoteContext)
+  const { getAllNotes, getNote, setNote, destroyNote, helia } = useContext(NoteContext)
   
   const saveNote = async (title, content) => {
     await setNote(title, content)
@@ -33,7 +33,7 @@ export default function Notes(){
     {
       activeNote == "" ?
         <NotesOverview notes={notes} setActiveNote={setActiveNote} />
-        : <NoteEditor title={activeNote} content={notes[activeNote]} saveNote={saveNote} destroyNote={deleteNote} />
+        : <NoteEditor title={activeNote} content={notes[activeNote]} saveNote={saveNote} destroyNote={deleteNote} helia={helia} />
     }
     </div>
   </div>)

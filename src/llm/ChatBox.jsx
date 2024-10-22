@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from "react"
 import OpenAI from 'openai';
 import { NoteContext } from "../notes/NoteContext"
+import ReactMarkdown from 'react-markdown'
 
 export default function ChatBox(){
   const [apiForm, setApiForm] = useState()
@@ -10,6 +11,8 @@ export default function ChatBox(){
   const [streaming, setStreaming] = useState("")
   const [allowSend, setAllowSend] = useState(true)
   const [notes, setNotes] = useState({})
+  
+  const gptModel = "gpt-4o-mini"
   
   const { getAllNotes } = useContext(NoteContext)
   useEffect(() => {
@@ -61,7 +64,7 @@ export default function ChatBox(){
       });
       
       const stream = await client.chat.completions.create({
-        model: 'gpt-3.5-turbo',
+        model: gptModel,
         messages: [{ role: 'user', content: query }],
         stream: true,
       });
@@ -83,29 +86,30 @@ export default function ChatBox(){
   }
   
   return (<div className="flex flex-col ">
-  
-    <div className="flex bg-blue-100 p-2 gap-2 w-fit">
-      <input type="text" className="input w-96" 
-        value={apiForm}
-        placeholder="OpenAI API key"
-        onChange={(e) => { setApiForm(e.target.value) }} 
-      />
-      <button 
-        disabled={!apiForm}
-        onClick={() => {
-          setApiKey(apiForm); 
-          localStorage.setItem("gptApiKey", apiForm); 
-          setApiForm("")}}
-        >Set API key</button>
+    <div>
+      <div className="flex bg-blue-100 p-2 gap-2 w-fit">
+        <input type="text" className="input w-96" 
+          value={apiForm}
+          placeholder="OpenAI API key"
+          onChange={(e) => { setApiForm(e.target.value) }} 
+        />
+        <button 
+          disabled={!apiForm}
+          onClick={() => {
+            setApiKey(apiForm); 
+            localStorage.setItem("gptApiKey", apiForm); 
+            setApiForm("")}}
+          >Set API key</button>
+      </div>
+      <span className="float-right">Model: {gptModel}</span>
     </div>
     <div className="divider"></div>
     <div>
     {
       messages.map((m, i) => {
-        console.log(m, i)
-        return (<div key={i} className="p-2 text-lg">
+        return (<div key={i} className="p-2 text-lg flex">
           <div className={"badge badge-outline mr-2 "+(m.from == "me" ? "badge-primary" : "badge-accent")}>{m.from}</div>
-          {m.msg}
+          <div className=" prose lg:prose-xl "><ReactMarkdown>{m.msg}</ReactMarkdown></div>
         </div>)
       })
     }

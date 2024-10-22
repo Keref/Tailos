@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { createContext } from 'react';
+import { createHelia } from 'helia';
 
 export const NoteContext = createContext();
 
@@ -24,6 +25,15 @@ This section includes a user's values and his communities charters, e.g. a lifes
 
 
 export default function NoteContextProvider({ children }){
+  const [helia, setHelia] = useState()
+  
+  useEffect(()=>{
+    const initHelia = async () => {
+      const helia = await createHelia();
+      setHelia(helia);
+    };
+    initHelia()
+  }, [])
   
   const getAllNotes = () => {
     let notes = JSON.parse(localStorage.getItem("notes") || "{}")
@@ -55,7 +65,7 @@ export default function NoteContextProvider({ children }){
 
     
   return (
-    <NoteContext.Provider value={{ setNote, getNote, destroyNote, getAllNotes }}>
+    <NoteContext.Provider value={{ setNote, getNote, destroyNote, getAllNotes, helia }}>
       {children}
     </NoteContext.Provider>
   )
