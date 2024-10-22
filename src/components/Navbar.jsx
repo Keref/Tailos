@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 
 
 export default function Navbar ({route, setRoute}) {
@@ -11,9 +12,9 @@ export default function Navbar ({route, setRoute}) {
   </div>
   <div className="flex-none">
     <ul className="menu menu-horizontal px-1 text-xl">
-      <li><a onClick={()=>{setRoute("Notes")}}>Context</a></li>
-      <li><a onClick={()=>{setRoute("Chat")}}>LLM</a></li>
-      <li><a onClick={()=>{setRoute("Communities")}}>Communities</a></li>
+      <li><Link to="/">Notes</Link></li>
+      <li><Link to="/chat">Chat</Link></li>
+      <li><Link to="/communities">Communities</Link></li>
     </ul>
   </div>
 </div>)
