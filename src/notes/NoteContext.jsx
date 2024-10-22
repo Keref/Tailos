@@ -63,9 +63,34 @@ export default function NoteContextProvider({ children }){
     localStorage.setItem("notes", JSON.stringify(notes))
   }
 
+  const addTask = (task) => {
+    let notes = JSON.parse(localStorage.getItem("notes") || "{}")
+    let tasks = notes["Tasks"] || []
+    tasks.push({id: "Task_" + new Date().toISOString(), status: "pending", ...task})
+    notes["Tasks"] = tasks
+    localStorage.setItem("notes", JSON.stringify(notes))
+  }
+  
+  const editTask = (id, action, msg) => {
+    let notes = JSON.parse(localStorage.getItem("notes") || "{}")
+    let tasks = notes["Tasks"] || []
+    for(let k =0; k< tasks.length; k++){
+      if (tasks[k].id == id){
+        if (action == "delete"){
+          tasks.splice(k, 1)
+          break
+        } else if( action == "set_done"){
+          tasks[k].status = "done"
+          break
+        }
+      }
+    }
+    notes["Tasks"] = tasks
+    localStorage.setItem("notes", JSON.stringify(notes))
+  }
     
   return (
-    <NoteContext.Provider value={{ setNote, getNote, destroyNote, getAllNotes, helia }}>
+    <NoteContext.Provider value={{ setNote, getNote, destroyNote, getAllNotes, helia, addTask, editTask }}>
       {children}
     </NoteContext.Provider>
   )

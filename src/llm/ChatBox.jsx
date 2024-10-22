@@ -3,6 +3,9 @@ import OpenAI from 'openai';
 import { NoteContext } from "../notes/NoteContext"
 import ReactMarkdown from 'react-markdown'
 
+
+const taskMsg = "Please provide a list of tasks to do as a JSON list of tasks with the format {title, task, rewardInTokens}, without adding anything than the JSON. Don't list tasks already done"
+
 export default function ChatBox(){
   const [apiForm, setApiForm] = useState()
   const [apiKey, setApiKey] = useState("")
@@ -12,9 +15,10 @@ export default function ChatBox(){
   const [allowSend, setAllowSend] = useState(true)
   const [notes, setNotes] = useState({})
   
+  const { getAllNotes, addTask } = useContext(NoteContext)
+  
   const gptModel = "gpt-4o-mini"
   
-  const { getAllNotes } = useContext(NoteContext)
   useEffect(() => {
     const getNotes = async () => {
       const notes = await getAllNotes()
@@ -44,13 +48,12 @@ export default function ChatBox(){
   }, [])
   
   
-  const sendMessage = async () => {
+  const sendMessage = async (msg) => {
     if (!apiKey) return;
     
     try {
-      let m = messages
-      setMessages([...messages, {from: 'me', msg: question}])
-      let q = question
+      setMessages([...messages, {from: 'me', msg: msg || question}])
+      let q = msg || question
       let context = flattenedOverview()
       let query = "Context: " + context + (q ? "\n\nMy query to answer adapted to the context: "+q : "")
       console.log("fullquery", query)
@@ -75,8 +78,18 @@ export default function ChatBox(){
         setStreaming(answer)
       }
 
+      // streaming doesnt seem to work
       setMessages([...messages, {from: 'me', msg: question}, {from: 'llm', msg: answer}])
       setStreaming("")
+
+      // if asked for tasks, add to task list
+
+      let tasks = JSON.parse(answer.replace("```json", "").replace("```", ""))
+      // sometimes the json format differs
+      if (!Array.isArray(tasks))
+        tasks = tasks[Object.keys(tasks)[0]]
+      console.log(tasks)
+      tasks.forEach(t => addTask(t))
     }
     catch(e){
       console.log("Chat", e)
@@ -123,13 +136,21 @@ export default function ChatBox(){
         onChange={(e) => { setQuestion(e.target.value) }} 
       >
       </textarea>
-      <button 
-        className="btn"
-        onClick={() => { sendMessage() }} 
-        disabled={!allowSend && !question}
-      >
-        Send
-      </button>
+      <div>
+        <button 
+          className="btn"
+          onClick={() => { sendMessage() }} 
+          disabled={!allowSend && !question}
+        >
+          Send
+        </button>
+        <button 
+          className="btn"
+          onClick={() => { sendMessage(taskMsg) }} 
+        >
+          Get Tasks
+        </button>
+      </div>
     </div>
   </div>
   )
