@@ -51,7 +51,8 @@ export default function Navbar ({route, setRoute}) {
       <li><Link to="/">Overview</Link></li>
       <li><Link to="/notes">Notes</Link></li>
       <li><Link to="/chat">Chat</Link></li>
-      <li><Link to="/communities">Communities</Link></li>
+      <li><Link to="/tasks">Tasks</Link></li>
+      {/*<li><Link to="/communities">Communities</Link></li>*/}
       <li><button className="btn btn-primary ml-4">Connect Wallet</button></li>
     </ul>
   </div>

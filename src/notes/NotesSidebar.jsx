@@ -17,12 +17,6 @@ export default function NotesSidebar({ notes, setActiveNote, saveNote }) {
       >
         Overview
       </div>
-      <div 
-        className={listStyle}
-        onClick={() => {setActiveNote("Tasks")}}
-      >
-        Tasks
-      </div>
     {
       Object.keys(notes).map(n => {
         if (n != "Tasks") 

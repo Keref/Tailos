@@ -88,8 +88,8 @@ export default function ChatBox(){
       // sometimes the json format differs
       if (!Array.isArray(tasks))
         tasks = tasks[Object.keys(tasks)[0]]
-      console.log(tasks)
-      tasks.forEach(t => addTask(t))
+      for(let k =0; k< tasks.length; k++)
+        await addTask(tasks[k])
     }
     catch(e){
       console.log("Chat", e)

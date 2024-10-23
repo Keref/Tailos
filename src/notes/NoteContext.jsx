@@ -42,7 +42,6 @@ export default function NoteContextProvider({ children }){
   }, [])
   
   const getAllNotes = async () => {
-    console.log(communityId)
     const res = await axios.get(SERVER_URL + "/communities/" + communityId)
     let notes = JSON.parse(res.data || "{}")
     if (!notes.hasOwnProperty("Overview")) {
