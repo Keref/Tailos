@@ -8,7 +8,7 @@ import Tasks from "./Tasks"
 export default function Notes(){
   const [activeNote, setActiveNote] = useState("")
   const [notes, setNotes] = useState({})
-  const { getAllNotes, getNote, setNote, destroyNote, helia, addTask, editTask } = useContext(NoteContext)
+  const { communityId, getAllNotes, getNote, setNote, destroyNote, helia, addTask, editTask } = useContext(NoteContext)
   
   const saveNote = async (title, content) => {
     await setNote(title, content)
@@ -24,9 +24,13 @@ export default function Notes(){
   }
   
   useEffect(() => {
-    const notes = getAllNotes()
-    setNotes(notes ?? {})
-  }, [])
+    const get = async () => {
+      const notes = await getAllNotes()
+      setActiveNote("")
+      setNotes(notes ?? {})
+    }
+    get()
+  }, [communityId])
   
   return (<div className="flex  min-h-96">
     <NotesSidebar notes={notes} setActiveNote={setActiveNote} saveNote={saveNote} />

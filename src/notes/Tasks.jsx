@@ -17,7 +17,6 @@ function TaskBox({ content, editTask }){
 
 
 export default function Tasks({ notes, addTask, editTask }){
-  
   return (<div>
     <h1>Tasks</h1>
     {

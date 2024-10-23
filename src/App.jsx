@@ -4,6 +4,8 @@ import NoteContextProvider from "./notes/NoteContext"
 import Notes from "./notes/Notes"
 import ChatBox from "./llm/ChatBox"
 import Communities from "./communities/Communities"
+import CreateCommunity from "./communities/CreateCommunity"
+import CommunityProfile from "./communities/CommunityProfile"
 import Layout from "./components/Layout"
 import NoPage from "./404"
 
@@ -13,9 +15,12 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Layout />}>
-          <Route index element={<Notes />} />
+          <Route index element={<CommunityProfile />} />
+          <Route path="notes" element={<Notes />} />
           <Route path="chat" element={<ChatBox />} />
           <Route path="communities" element={<Communities />} />
+          <Route path="communities/create" element={<CreateCommunity />} />
+          <Route path="communities/:communityId" element={<CommunityProfile />} />
           <Route path="*" element={<NoPage />} />
         </Route>
       </Routes>

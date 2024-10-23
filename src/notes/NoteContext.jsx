@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react'
 import { createContext } from 'react';
 import { createHelia } from 'helia';
+import axios from "axios"
+
+const SERVER_URL = "http://localhost:3000"
 
 export const NoteContext = createContext();
 
@@ -26,53 +29,57 @@ This section includes a user's values and his communities charters, e.g. a lifes
 
 export default function NoteContextProvider({ children }){
   const [helia, setHelia] = useState()
+  const [communityId, setCommunityId] = useState("me_notes")
   
-  useEffect(()=>{
+  useEffect(() => {
     const initHelia = async () => {
-      const helia = await createHelia();
-      setHelia(helia);
+      try {
+        const helia = await createHelia();
+        setHelia(helia);
+      } catch(e) {console.log("Helia", e)}
     };
     initHelia()
   }, [])
   
-  const getAllNotes = () => {
-    let notes = JSON.parse(localStorage.getItem("notes") || "{}")
+  const getAllNotes = async () => {
+    console.log(communityId)
+    const res = await axios.get(SERVER_URL + "/communities/" + communityId)
+    let notes = JSON.parse(res.data || "{}")
     if (!notes.hasOwnProperty("Overview")) {
-      setNote("Overview", overview)
-      notes = getAllNotes()
+      notes["Overview"] = overview
     }
     return notes
   }
   
-  const getNote = (title) => {
-    const notes = JSON.parse(localStorage.getItem("notes") || "{}")
+  const save = async (title, content, isDelete) => {
+    try {
+      const res = await axios.post(SERVER_URL + "/communities/" + communityId, {title: title, content: content, isDelete: isDelete })
+    } catch(e) { console.log("Save context", e)}
+  }
+  
+  const getNote = async (title) => {
+    const notes = await getAllNotes()
     return notes[title]
   }
   
-  const setNote = (title, content) => {
-    let notes = JSON.parse(localStorage.getItem("notes") || "{}")
-    console.log("notes", notes)
-    notes[title] = content
-    console.log(notes)
-    localStorage.setItem("notes", JSON.stringify(notes))
+  const setNote = async (title, content) => {
+    await save(title, content)
   }
   
-  const destroyNote = (title) => {
-    let notes = JSON.parse(localStorage.getItem("notes") || "{}")
-    delete notes[title]
-    localStorage.setItem("notes", JSON.stringify(notes))
+  const destroyNote = async (title) => {
+    await save(title, "", true)
   }
 
-  const addTask = (task) => {
-    let notes = JSON.parse(localStorage.getItem("notes") || "{}")
+  const addTask = async (task) => {
+    const notes = await getAllNotes()
     let tasks = notes["Tasks"] || []
     tasks.push({id: "Task_" + new Date().toISOString(), status: "pending", ...task})
-    notes["Tasks"] = tasks
-    localStorage.setItem("notes", JSON.stringify(notes))
+
+    await save("Tasks", tasks)
   }
   
-  const editTask = (id, action, msg) => {
-    let notes = JSON.parse(localStorage.getItem("notes") || "{}")
+  const editTask = async (id, action, msg) => {
+    const notes = await getAllNotes()
     let tasks = notes["Tasks"] || []
     for(let k =0; k< tasks.length; k++){
       if (tasks[k].id == id){
@@ -85,12 +92,30 @@ export default function NoteContextProvider({ children }){
         }
       }
     }
-    notes["Tasks"] = tasks
-    localStorage.setItem("notes", JSON.stringify(notes))
+    await save("Tasks", tasks)
+  }
+  
+  const getCommunities = async () => {
+    try {
+      const res = await axios.get(SERVER_URL + "/communities")
+      return res.data
+    } catch(e) { console.log("Save context", e)}
+  }
+  
+  const createCommunity = async (name, overview) => {
+    const res = await axios.get(SERVER_URL + "/communities/" + name)
+    // community doesnt exist: server returns {}
+    if (!res.data){
+      let notes = { Overview: overview }
+      const res = await axios.post(SERVER_URL + "/communities/" + name, {content: JSON.stringify(notes)})
+    }
+    setCommunityId(name)
   }
     
   return (
-    <NoteContext.Provider value={{ setNote, getNote, destroyNote, getAllNotes, helia, addTask, editTask }}>
+    <NoteContext.Provider value={{ setNote, getNote, destroyNote, getAllNotes, helia, addTask, editTask, 
+      getCommunities, setCommunityId, communityId, createCommunity
+    }}>
       {children}
     </NoteContext.Provider>
   )
